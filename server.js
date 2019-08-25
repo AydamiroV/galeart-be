@@ -12,7 +12,7 @@ app.use(express.json());
 app.post('/contact', (req, res) => {
 	//TODO
 	//send e-mail
-//	log('Data: ');
+	log('Data: ', req.body);
 	res.json({ message : 'Your e-mail has been received. We will contact you as soon as we can. Thank you for choosing GaleArt!'})
 });
 
