@@ -2,27 +2,44 @@ const express = require('express');
 const app = express();
 const PORT = 4200;
 const path = require('path');
-const log = console.log;
 
-//Data parsing
-//using express to parse data fron the html form
+const contactService = require('./services/ContactService');
+
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
+
+
+
+/**
+*   Save the message from the user to DB
+*   and notify the Admin
+*/
 app.post('/contact', (req, res) => {
-	//TODO
-	//send e-mail
-	log('Data: ', req.body);
-	res.json({ message : 'Your e-mail has been received. We will contact you as soon as we can. Thank you for choosing GaleArt!'})
+	console.log('Data: ', req.body);
+
+    const params = {
+        name: req.body.name,
+        email: req.body.email,
+        message: req.body.message
+    };
+
+    contactService.saveMessageAndNotify(params, (error, success) => {
+        if (error) {
+            res.status(error.code).json(error.msg);
+        } else {
+            res.json(success);
+        }
+    })
 });
 
-app.post("/placeorder", function(req, res) {
+app.post('/placeOrder', function(req, res) {
 	console.log(req.body);
 });
 
-app.get('/', (req, res) => {
-    log('Data: ');
-	res.sendFile(path.join(__dirname, 'contact.html'));
-});
+//app.get('/', (req, res) => {
+//    console.log('Data: ');
+//	res.sendFile(path.join(__dirname, 'contact.html'));
+//});
 
-app.listen(PORT, () => log('Server starts on PORT, ', PORT));
+app.listen(PORT, () => console.log('Server starts on PORT, ', PORT));
